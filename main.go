@@ -15,17 +15,6 @@ func check(e error) {
 	}
 }
 
-const (
-	//IN  string = "me_at_the_zoo.in"
-	//OUT string = "me_at_the_zoo.out"
-	//IN  string = "kittens.in"
-	//OUT string = "kittens.out"
-	//IN  string = "trending_today.in"
-	//OUT string = "trending_today.out"
-	IN  string = "videos_worth_spreading.in"
-	OUT string = "videos_worth_spreading.out"
-)
-
 func parseFile(in string) DataCenter {
 	f, err := os.Open(in)
 	check(err)
