@@ -15,14 +15,13 @@ func check(e error) {
 	}
 }
 
-func main() {
+func parseFile() DataCenter {
 	f, err := os.Open("me_at_the_zoo_example.in")
 	check(err)
 	defer f.Close()
 
-	scanner := bufio.NewScanner(f)
-
 	// read params
+	scanner := bufio.NewScanner(f)
 	scanner.Scan()
 	line := strings.Split(scanner.Text(), " ")
 
@@ -33,7 +32,7 @@ func main() {
 	nbCaches := convert2int(line[3])
 	cachSize := convert2int(line[4])
 
-	entry := Entry{
+	entry := DataCenter{
 		Videos:      []Video{},
 		Endpoints:   []Endpoint{},
 		RequestDesc: nbRequestDesc,
@@ -50,9 +49,10 @@ func main() {
 
 	// second line
 	scanner.Scan()
-	for _, o := range strings.Split(scanner.Text(), " ") {
+	for i, o := range strings.Split(scanner.Text(), " ") {
 		entry.Videos = append(entry.Videos, Video{
-			Size: convert2int(o),
+			index: i,
+			Size:  convert2int(o),
 		})
 	}
 
@@ -96,6 +96,30 @@ func main() {
 	}
 
 	fmt.Println(entry)
+
+	return entry
+}
+
+func writeOutFile(caches []Cache) {
+	f, err := os.Create("me_at_the_zoo.out")
+	check(err)
+	defer f.Close()
+
+	f.WriteString(fmt.Sprintf("%d\n", len(caches)))
+	for i, c := range caches {
+		f.WriteString(fmt.Sprintf("%d", i))
+		for j, v := range c.Videos {
+			f.WriteString(fmt.Sprintf(" %d", v.index))
+		}
+		f.WriteString("\n")
+	}
+	f.Sync()
+}
+
+func main() {
+	dc := parseFile()
+	caches := startegyOne(dc)
+	writeOutFile(caches)
 }
 
 func convert2int(val string) int {
@@ -105,7 +129,8 @@ func convert2int(val string) int {
 }
 
 type Video struct {
-	Size int
+	index int
+	Size  int
 }
 
 // REPETABLE
@@ -113,13 +138,10 @@ type Endpoint struct {
 	index               int
 	latencyToDatacenter int
 	Latencies           []Latency
-	Requests 	    []Request
+	Requests            []Request
 }
 
 type Latency map[int]int
-
-type DataCenter struct {
-}
 
 type Request struct {
 	Video    Video
@@ -129,9 +151,10 @@ type Request struct {
 
 type Cache struct {
 	Capacity int
+	Videos   []Video
 }
 
-type Entry struct {
+type DataCenter struct {
 	Videos      []Video
 	Endpoints   []Endpoint
 	Caches      []Cache
