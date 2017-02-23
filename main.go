@@ -46,7 +46,11 @@ func convert2int(val string) int {
 type Video struct {
 }
 
+// REPETABLE
 type Endpoint struct {
+	index          int
+	latency        int
+	connectedCache int
 }
 
 type DataCenter struct {
@@ -65,3 +69,5 @@ type Entry struct {
 	NbCache     int
 	CacheSize   int
 }
+
+type VideosSize map[int]int
