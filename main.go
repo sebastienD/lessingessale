@@ -11,10 +11,12 @@ type Video struct {
 
 // REPETABLE
 type Endpoint struct {
-	index          int
-	latency        int
-	connectedCache int
+	index               int
+	latencyToDatacenter int
+	Latencies           []Latency
 }
+
+type Latency map[int]int
 
 type DataCenter struct {
 }
