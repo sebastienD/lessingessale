@@ -12,4 +12,5 @@ type Entry struct {
 	RequestDesc int
 	NbCache     int
 	CacheSize   int
+	VideoSizes  []int
 }
