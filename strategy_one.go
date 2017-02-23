@@ -1,7 +1,7 @@
 package main
 
-func startegyOne(dc DataCenter) []Cache {
-	endpoints := []Endpoint{}
+func strategyOne(dc DataCenter) []*Cache {
+	endpoints := dc.Endpoints
 	sortedEndpoints := sortEndpointsByRequestsNumber(endpoints)
 
 	for _, e := range sortedEndpoints {
@@ -18,4 +18,5 @@ func startegyOne(dc DataCenter) []Cache {
 			}
 		}
 	}
+	return dc.Caches
 }

@@ -33,16 +33,16 @@ func parseFile() DataCenter {
 	cachSize := convert2int(line[4])
 
 	entry := DataCenter{
-		Videos:      []Video{},
-		Endpoints:   []Endpoint{},
+		Videos:      []*Video{},
+		Endpoints:   []*Endpoint{},
 		RequestDesc: nbRequestDesc,
-		Requests:    []Request{},
-		Caches:      []Cache{},
+		Requests:    []*Request{},
+		Caches:      []*Cache{},
 	}
 	fmt.Printf("%+v\n", entry)
 
 	for i := 0; i < nbCaches; i++ {
-		entry.Caches = append(entry.Caches, Cache{
+		entry.Caches = append(entry.Caches, &Cache{
 			Capacity: cachSize,
 		})
 	}
@@ -50,7 +50,7 @@ func parseFile() DataCenter {
 	// second line
 	scanner.Scan()
 	for i, o := range strings.Split(scanner.Text(), " ") {
-		entry.Videos = append(entry.Videos, Video{
+		entry.Videos = append(entry.Videos, &Video{
 			index: i,
 			Size:  convert2int(o),
 		})
@@ -63,13 +63,17 @@ func parseFile() DataCenter {
 		split := strings.Split(scanner.Text(), " ")
 		nbLatencies := convert2int(split[1])
 
-		endpoint := Endpoint{latencyToDatacenter: convert2int(split[0])}
+		endpoint := &Endpoint{latencyToDatacenter: convert2int(split[0])}
+
 		for i := 0; i < nbLatencies; i++ {
 			scanner.Scan()
 			split = strings.Split(scanner.Text(), " ")
-			latence := Latency{}
-			latence[convert2int(split[0])] = convert2int(split[1])
-			endpoint.Latencies = append(endpoint.Latencies, latence)
+			cache := &Cache{
+				Capacity: cachSize,
+				Latency: convert2int(split[1]),
+				Videos: []*Video{},
+			}
+			endpoint.Caches = append(endpoint.Caches, cache)
 		}
 
 		entry.Endpoints = append(entry.Endpoints, endpoint)
@@ -85,7 +89,7 @@ func parseFile() DataCenter {
 		video := entry.Videos[convert2int(split[0])]
 		nbRequests := convert2int(split[2])
 
-		r := Request{
+		r := &Request{
 			Endpoint: endpoint,
 			Nb:       nbRequests,
 			Video:    video,
@@ -100,7 +104,7 @@ func parseFile() DataCenter {
 	return entry
 }
 
-func writeOutFile(caches []Cache) {
+func writeOutFile(caches []*Cache) {
 	f, err := os.Create("me_at_the_zoo.out")
 	check(err)
 	defer f.Close()
@@ -108,7 +112,7 @@ func writeOutFile(caches []Cache) {
 	f.WriteString(fmt.Sprintf("%d\n", len(caches)))
 	for i, c := range caches {
 		f.WriteString(fmt.Sprintf("%d", i))
-		for j, v := range c.Videos {
+		for _, v := range c.Videos {
 			f.WriteString(fmt.Sprintf(" %d", v.index))
 		}
 		f.WriteString("\n")
@@ -118,7 +122,7 @@ func writeOutFile(caches []Cache) {
 
 func main() {
 	dc := parseFile()
-	caches := startegyOne(dc)
+	caches := strategyOne(dc)
 	writeOutFile(caches)
 }
 
@@ -137,27 +141,29 @@ type Video struct {
 type Endpoint struct {
 	index               int
 	latencyToDatacenter int
-	Latencies           []Latency
-	Requests            []Request
+	//Latencies           []Latency
+	Requests            []*Request
+	Caches 		    []*Cache
 }
 
 type Latency map[int]int
 
 type Request struct {
-	Video    Video
-	Endpoint Endpoint
+	Video    *Video
+	Endpoint *Endpoint
 	Nb       int
 }
 
 type Cache struct {
 	Capacity int
-	Videos   []Video
+	Videos   []*Video
+	Latency  int
 }
 
 type DataCenter struct {
-	Videos      []Video
-	Endpoints   []Endpoint
-	Caches      []Cache
+	Videos      []*Video
+	Endpoints   []*Endpoint
+	Caches      []*Cache
 	RequestDesc int
-	Requests    []Request
+	Requests    []*Request
 }
