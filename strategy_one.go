@@ -4,7 +4,7 @@ func StartegyOne(dc DataCenter) {
 	endpoints := []Endpoint{}
 	sortedEndpoints := sortEndpointsByRequestsNumber(endpoints)
 
-	for _, e := range endpoints {
+	for _, e := range sortedEndpoints {
 		requests := e.GetRequestsSortedByNb() // TODO: or by size of video ?
 		for _, r := range requests {
 			inserted :=  false
@@ -14,7 +14,7 @@ func StartegyOne(dc DataCenter) {
 			for i:= 0; i < len(caches) && !inserted; i++ {
 				// Insert the best video in cache
 				cache := caches[0]
-				if /*cache.Capacity >  video.Size */true {
+				if cache.Capacity >  video.Size {
 					cache.Insert(video)
 					inserted = true;
 				}

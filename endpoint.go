@@ -2,22 +2,36 @@ package main
 
 import "sort"
 
-type ByVideoSize []Request
+type RequestBySize []Request
 
-func (a ByVideoSize) Len() int           { return len(a) }
-func (a ByVideoSize) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByVideoSize) Less(i, j int) bool { return a[i].Nb < a[j].Nb }
+func (a RequestBySize) Len() int           { return len(a) }
+func (a RequestBySize) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a RequestBySize) Less(i, j int) bool { return a[i].Nb < a[j].Nb }
 
 
 func (ep *Endpoint) GetRequestsSortedByNb() []Request {
-	return sort.Sort(ep.Requests)
+	sortedRequests := ep.Requests
+	sort.Sort(RequestBySize(sortedRequests))
+	return sortedRequests
 }
 
 func (ep *Endpoint) GetCacheSortedByLatency() []Cache {
-	return  []Cache{}
+	/*sortedRequests := ep.Requests
+	sort.Sort(RequestBySize(sortedRequests))
+	return sortedRequests
+	*/
+	return []Cache{}
 }
+
+type EndpointsByNbRequests []Endpoint
+
+func (a EndpointsByNbRequests) Len() int           { return len(a) }
+func (a EndpointsByNbRequests) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a EndpointsByNbRequests) Less(i, j int) bool { return len(a[i].Requests) < len(a[j].Requests) }
 
 
 func sortEndpointsByRequestsNumber(endpoints []Endpoint) []Endpoint {
-	return endpoints
+	sortedEndpoints := endpoints
+	sort.Sort(EndpointsByNbRequests(sortedEndpoints))
+	return sortedEndpoints
 }
