@@ -1,8 +1,18 @@
 package main
 
+
+type CacheWithEndpoint struct {
+	Endpoint *Endpoint
+	Cache *Cache
+}
+
+
+
 func strategyOne(dc DataCenter) []*Cache {
 	endpoints := dc.Endpoints
 	sortedEndpoints := sortEndpointsByRequestsNumber(endpoints)
+
+	emptyCaches := map[*Cache]CacheWithEndpoint{}
 
 	for _, e := range sortedEndpoints {
 		requests := e.GetRequestsSortedByNb() // TODO: or by size of video ?
@@ -18,5 +28,24 @@ func strategyOne(dc DataCenter) []*Cache {
 			}
 		}
 	}
+
+	for _, e := range sortedEndpoints {
+		for _, c := range e.Caches {
+			if len(c.Videos) {
+				emptyCaches[c]=CacheWithEndpoint{
+					Endpoint: e,
+					Cache: c,
+				}
+			}
+		}
+	}
+
+	for cache, assoc := range emptyCaches {
+		requests := assoc.Endpoint.GetRequestsSortedByVideoSize()
+		for _, r := range requests {
+			cache.Insert(r.Video)
+		}
+	}
+
 	return dc.Caches
 }

@@ -9,9 +9,22 @@ func (a RequestBySize) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a RequestBySize) Less(i, j int) bool { return a[i].Nb < a[j].Nb }
 
 
+type RequestByVideoSize []*Request
+
+func (a RequestByVideoSize) Len() int           { return len(a) }
+func (a RequestByVideoSize) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a RequestByVideoSize) Less(i, j int) bool { return a[i].Video.Size > a[j].Video.Size }
+
+
 func (ep *Endpoint) GetRequestsSortedByNb() []*Request {
 	sortedRequests := ep.Requests
 	sort.Sort(RequestBySize(sortedRequests))
+	return sortedRequests
+}
+
+func (ep *Endpoint) GetRequestsSortedByVideoSize() []*Request {
+	sortedRequests := ep.Requests
+	sort.Sort(RequestByVideoSize(sortedRequests))
 	return sortedRequests
 }
 
