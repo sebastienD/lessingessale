@@ -15,8 +15,13 @@ func check(e error) {
 	}
 }
 
+const (
+	IN  string = "me_at_the_zoo_example.in"
+	OUT string = "me_at_the_zoo_example.out"
+)
+
 func parseFile() DataCenter {
-	f, err := os.Open("me_at_the_zoo_example.in")
+	f, err := os.Open(IN)
 	check(err)
 	defer f.Close()
 
@@ -101,7 +106,7 @@ func parseFile() DataCenter {
 }
 
 func writeOutFile(caches []Cache) {
-	f, err := os.Create("me_at_the_zoo.out")
+	f, err := os.Create(OUT)
 	check(err)
 	defer f.Close()
 
