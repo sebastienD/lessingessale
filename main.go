@@ -44,6 +44,7 @@ func convert2int(val string) int {
 }
 
 type Video struct {
+	Size int
 }
 
 // REPETABLE
@@ -59,20 +60,18 @@ type DataCenter struct {
 }
 
 type Request struct {
-	Video    int
-	Endpoint int
+	Video    Video
+	Endpoint Endpoint
 	Nb       int
 }
 
 type Cache struct {
+	Capacity int
 }
 
 type Entry struct {
-	Videos      int
-	Endpoints   int
+	Videos      []Video
+	Endpoints   []Endpoint
+	Caches      []Cache
 	RequestDesc int
-	NbCache     int
-	CacheSize   int
 }
-
-type VideosSize map[int]int
