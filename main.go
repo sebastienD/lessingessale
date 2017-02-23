@@ -85,11 +85,14 @@ func main() {
 		video := entry.Videos[convert2int(split[0])]
 		nbRequests := convert2int(split[2])
 
-		entry.Requests = append(entry.Requests, Request{
+		r := Request{
 			Endpoint: endpoint,
 			Nb:       nbRequests,
 			Video:    video,
-		})
+		}
+
+		entry.Requests = append(entry.Requests, r)
+		endpoint.Requests = append(endpoint.Requests, r)
 	}
 
 	fmt.Println(entry)
@@ -110,6 +113,7 @@ type Endpoint struct {
 	index               int
 	latencyToDatacenter int
 	Latencies           []Latency
+	Requests 	    []Request
 }
 
 type Latency map[int]int
