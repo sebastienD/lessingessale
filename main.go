@@ -6,25 +6,19 @@ func main() {
 	log.Println("plop")
 }
 
-
 type Video struct {
-
 }
 
 type Endpoint struct {
-
 }
 
 type DataCenter struct {
-
 }
 
 type Request struct {
-
 }
 
 type Cache struct {
-
 }
 
 type Entry struct {
@@ -33,5 +27,6 @@ type Entry struct {
 	RequestDesc int
 	NbCache     int
 	CacheSize   int
-	VideoSizes  []int
 }
+
+type Entry2 map[int]int
