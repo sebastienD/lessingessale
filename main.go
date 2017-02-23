@@ -59,6 +59,9 @@ type DataCenter struct {
 }
 
 type Request struct {
+	Video    int
+	Endpoint int
+	Nb       int
 }
 
 type Cache struct {
