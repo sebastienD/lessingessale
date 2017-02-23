@@ -16,12 +16,18 @@ func check(e error) {
 }
 
 const (
-	IN  string = "me_at_the_zoo_example.in"
-	OUT string = "me_at_the_zoo_example.out"
+	//IN  string = "me_at_the_zoo.in"
+	//OUT string = "me_at_the_zoo.out"
+	//IN  string = "kittens.in"
+	//OUT string = "kittens.out"
+	//IN  string = "trending_today.in"
+	//OUT string = "trending_today.out"
+	IN  string = "videos_worth_spreading.in"
+	OUT string = "videos_worth_spreading.out"
 )
 
-func parseFile() DataCenter {
-	f, err := os.Open(IN)
+func parseFile(in string) DataCenter {
+	f, err := os.Open(in)
 	check(err)
 	defer f.Close()
 
@@ -46,10 +52,14 @@ func parseFile() DataCenter {
 	}
 	fmt.Printf("%+v\n", entry)
 
+	grosseMap := map[int]*Cache{}
 	for i := 0; i < nbCaches; i++ {
-		entry.Caches = append(entry.Caches, &Cache{
+		cache := &Cache{
 			Capacity: cachSize,
-		})
+			Videos:   []*Video{},
+		}
+		entry.Caches = append(entry.Caches, cache)
+		grosseMap[i] = cache
 	}
 
 	// second line
@@ -73,11 +83,8 @@ func parseFile() DataCenter {
 		for i := 0; i < nbLatencies; i++ {
 			scanner.Scan()
 			split = strings.Split(scanner.Text(), " ")
-			cache := &Cache{
-				Capacity: cachSize,
-				Latency: convert2int(split[1]),
-				Videos: []*Video{},
-			}
+			cache, _ := grosseMap[i]
+			cache.Latency = convert2int(split[1])
 			endpoint.Caches = append(endpoint.Caches, cache)
 		}
 
@@ -109,14 +116,15 @@ func parseFile() DataCenter {
 	return entry
 }
 
-func writeOutFile(caches []*Cache) {
-	f, err := os.Create(OUT)
+func writeOutFile(caches []*Cache, out string) {
+	f, err := os.Create(out)
 	check(err)
 	defer f.Close()
 
 	f.WriteString(fmt.Sprintf("%d\n", len(caches)))
 	for i, c := range caches {
 		f.WriteString(fmt.Sprintf("%d", i))
+		fmt.Println(len(c.Videos))
 		for _, v := range c.Videos {
 			f.WriteString(fmt.Sprintf(" %d", v.index))
 		}
@@ -126,9 +134,12 @@ func writeOutFile(caches []*Cache) {
 }
 
 func main() {
-	dc := parseFile()
-	caches := strategyOne(dc)
-	writeOutFile(caches)
+	files := []string{"me_at_the_zoo", "kittens", "trending_today", "videos_worth_spreading"}
+	for _, f := range files {
+		dc := parseFile(f + ".in")
+		caches := strategyOne(dc)
+		writeOutFile(caches, f+".out")
+	}
 }
 
 func convert2int(val string) int {
@@ -147,8 +158,8 @@ type Endpoint struct {
 	index               int
 	latencyToDatacenter int
 	//Latencies           []Latency
-	Requests            []*Request
-	Caches 		    []*Cache
+	Requests []*Request
+	Caches   []*Cache
 }
 
 type Latency map[int]int
