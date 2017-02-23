@@ -9,7 +9,11 @@ func main() {
 type Video struct {
 }
 
+// REPETABLE
 type Endpoint struct {
+	index          int
+	latency        int
+	connectedCache int
 }
 
 type DataCenter struct {
@@ -29,4 +33,4 @@ type Entry struct {
 	CacheSize   int
 }
 
-type Entry2 map[int]int
+type VideosSize map[int]int
