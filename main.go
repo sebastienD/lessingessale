@@ -50,7 +50,6 @@ func parseFile(in string) DataCenter {
 		Requests:    []*Request{},
 		Caches:      []*Cache{},
 	}
-	fmt.Printf("%+v\n", entry)
 
 	grosseMap := map[int]*Cache{}
 	for i := 0; i < nbCaches; i++ {
@@ -91,8 +90,6 @@ func parseFile(in string) DataCenter {
 		entry.Endpoints = append(entry.Endpoints, endpoint)
 	}
 
-	fmt.Println(entry.Endpoints)
-
 	for k := 0; k < nbRequestDesc; k++ {
 		scanner.Scan()
 		split := strings.Split(scanner.Text(), " ")
@@ -111,8 +108,6 @@ func parseFile(in string) DataCenter {
 		endpoint.Requests = append(endpoint.Requests, r)
 	}
 
-	fmt.Println(entry)
-
 	return entry
 }
 
@@ -124,7 +119,6 @@ func writeOutFile(caches []*Cache, out string) {
 	f.WriteString(fmt.Sprintf("%d\n", len(caches)))
 	for i, c := range caches {
 		f.WriteString(fmt.Sprintf("%d", i))
-		fmt.Println(len(c.Videos))
 		for _, v := range c.Videos {
 			f.WriteString(fmt.Sprintf(" %d", v.index))
 		}
