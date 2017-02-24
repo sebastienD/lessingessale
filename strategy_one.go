@@ -38,6 +38,7 @@ func strategyOne(dc DataCenter) []*Cache {
 
 	for _, e := range sortedEndpoints {
 		for _, c := range e.Caches {
+			log.Println("Video", len(c.Videos))
 			if len(c.Videos) == 0 {
 				emptyCaches[c] = CacheWithEndpoint{
 					Endpoint: e,

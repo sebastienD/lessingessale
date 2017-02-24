@@ -43,6 +43,7 @@ func parseFile(in string) DataCenter {
 	grosseMap := map[int]*Cache{}
 	for i := 0; i < nbCaches; i++ {
 		cache := &Cache{
+			Index:    i,
 			Capacity: cachSize,
 			Videos:   []*Video{},
 		}
@@ -59,19 +60,20 @@ func parseFile(in string) DataCenter {
 		})
 	}
 
-	// second line
 	//  Parse endpoints
 	for n := 0; n < nbEndpoints; n++ {
 		scanner.Scan()
 		split := strings.Split(scanner.Text(), " ")
+		latencyToDatacenter := convert2int(split[0])
 		nbLatencies := convert2int(split[1])
 
-		endpoint := &Endpoint{latencyToDatacenter: convert2int(split[0])}
+		endpoint := &Endpoint{latencyToDatacenter: latencyToDatacenter}
 
 		for i := 0; i < nbLatencies; i++ {
 			scanner.Scan()
 			split = strings.Split(scanner.Text(), " ")
-			cache, _ := grosseMap[i]
+			indexCache := convert2int(split[0])
+			cache, _ := grosseMap[indexCache]
 			cache.Latency = convert2int(split[1])
 			endpoint.Caches = append(endpoint.Caches, cache)
 		}
@@ -154,6 +156,7 @@ type Request struct {
 }
 
 type Cache struct {
+	Index    int
 	Capacity int
 	Videos   []*Video
 	Latency  int
