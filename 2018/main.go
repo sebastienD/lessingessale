@@ -36,15 +36,18 @@ func main() {
 	d, rides := parseFile(fileIn)
 	fmt.Printf("data: %v, %v", d, rides)
 
-	final := make([][]ride, d.nbVehicules)
+	assigns := dummySolver(d, rides)
 
+	writeOutFile(assigns, fileOut)
+}
+
+func dummySolver(d data, rides []ride) [][]ride {
+	assigns := make([][]ride, d.nbVehicules)
 	for i, r := range rides {
 		j := i % d.nbVehicules
-		final[j] = append(final[j], r)
-
+		assigns[j] = append(assigns[j], r)
 	}
-
-	writeOutFile(final, fileOut)
+	return assigns
 }
 
 func writeOutFile(final [][]ride, out string) {
